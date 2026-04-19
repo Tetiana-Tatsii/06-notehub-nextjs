@@ -1,5 +1,5 @@
 import { fetchNoteById } from "@/lib/api";
-import NoteDetailClient from "./NoteDetail.client";
+import NoteDetailClient from "./NoteDetails.client";
 import { notFound } from "next/navigation";
 
 type Props = {
