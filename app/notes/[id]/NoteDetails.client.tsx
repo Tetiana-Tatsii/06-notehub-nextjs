@@ -1,23 +1,32 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-import { deleteNote } from "@/lib/api";
-import type { Note } from "@/types/note";
+import { fetchNoteById, deleteNote } from "@/lib/api";
 import css from "./NoteDetails.module.css";
 
 type Props = {
-  note: Note;
+  id: string;
 };
 
-export default function NoteDetailClient({ note }: Props) {
+export default function NoteDetailsClient({ id }: Props) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  const {
+    data: note,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["note", id],
+    queryFn: () => fetchNoteById(id),
+    refetchOnMount: false,
+  });
+
   const deleteMutation = useMutation({
-    mutationFn: () => deleteNote(note.id),
+    mutationFn: () => deleteNote(id),
     onSuccess: () => {
       toast.success("Note deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["notes"] });
@@ -33,6 +42,9 @@ export default function NoteDetailClient({ note }: Props) {
       deleteMutation.mutate();
     }
   };
+
+  if (isLoading) return <p>Loading note...</p>;
+  if (isError || !note) return <p>Error loading note.</p>;
 
   return (
     <div className={css.wrapper}>

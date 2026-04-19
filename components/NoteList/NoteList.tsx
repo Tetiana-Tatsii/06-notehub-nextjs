@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -27,7 +28,9 @@ const NoteList = ({ notes }: NoteListProps) => {
     <ul className={css.list}>
       {notes.map((note) => (
         <li key={note.id} className={css.listItem}>
-          <h2 className={css.title}>{note.title}</h2>
+          <Link href={`/notes/${note.id}`} className={css.link}>
+            <h3>{note.title}</h3>
+          </Link>
           <p className={css.content}>{note.content}</p>
 
           <div className={css.footer}>
